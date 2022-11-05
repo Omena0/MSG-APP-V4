@@ -10,12 +10,9 @@ users = set()
 
 class user():
 
-    def __init__(self,name,token,ip,port,cs):
+    def __init__(self,name,token):
         self.name = name
         self.token = token
-        self.ip = ip
-        self.port = port
-        self.cs = cs
         users.add(self)
     def bind(self,name,value):
         exec(f'self.{name} = {value}')
@@ -25,32 +22,24 @@ def get_user(name):
         if user.name == name:
             return user
 
-def authorise(msg,cs,address):
-    lib.log('AUTH',msg)
-    if msg == '[FAIL]':
-        cs.close()
-        main.clients.remove(cs)
-        
-    msg = msg.replace('[AUTH]','').split(':')
-    name = msg[0]
-    token = msg[1]
-    ip = address[0]
-    port = address[1]
-    user(name,token,ip,port,cs)
-
 def on_connect(cs,ip,port):
     lib.log('+',f'New connection from {ip}! [{port}]')
 
 def on_msg(msg,cs,address):
     ip = address[0]
-    port = address[1]
+    port = address[1] # Syntax: AUTH REFRESH TOKEN <NAME>:<TOKEN>
     lib.log('CLIENT',msg)
     if msg.startswith('[AUTH] REFRESH TOKEN '):
-        lib.log('AUTH',f'{ip}:{port} REFRESH TOKEN')
+        lib.log('*',f'{ip}:{port} REFRESH TOKEN')
         msg = msg.replace('[AUTH] REFRESH TOKEN ','')
         name = msg.split(':')[0]
         token = msg.split(':')[1]
-        auth.send(f'[AUTH] {ip}:{name}:{token}')
+        global var
+        var = cs,name,token
+        auth.send(f'[AUTH] VALIDATE TOKEN {ip}:{name}:{token}')
+        
+
+
 
 def on_disconnect(cs,ip,port):
     lib.log('-',f'User {get_user(cs).name} Disconnected!')
@@ -60,13 +49,33 @@ main.bind('connect',on_connect)
 main.bind('msg',on_msg)
 main.bind('disconnect',on_disconnect)
 
-auth.bind('msg',authorise)
 
 
 
+while True:
+    msg = auth.socket.recv(auth.msgbits).decode()
 
+    lib.log('AUTH',msg)
 
+    if msg.startswith('X_'):
+        global var
+        cs = var[0]
+        match msg:
+            case 'X_Invalid_User': lib.log('!','X_Invalid_User'); cs.send(msg.encode())
+            case 'X_Wrong_User': lib.log('!','X_Wrong_User'); cs.send(msg.encode())
+            case 'X_Invalid_Token': lib.log('!','X_Invalid_Token'); cs.send(msg.encode())
+            case 'X_Valid_Token':
+                cs.send(msg.encode())
+                name = var[1]
+                token = var[2]
+                a = user(name,token)
+                a.bind('cs',f'"{cs}"')
+            case _:
+                lib.log('!',f'Invalid return: {msg}')
+ 
 
+    
+    
 
 
 

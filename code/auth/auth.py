@@ -4,6 +4,8 @@ import config as c
 import json as j
 import socket
 
+debug = False
+
 main = ss.connection(c.ip,c.port,'server',logging=True)
 
 users = []
@@ -45,6 +47,11 @@ def on_msg(msg,cs,address):
         name = msg[1]
         token = msg[2]
         index = 0
+        # Can return:
+        # X_Invalid_user
+        # X_Wrong_User
+        # X_Invalid_Token
+        # X_Valid_Token
         if not name in usernames: cs.send('X_Invalid_User'.encode()); return
         for username in usernames:
             if not username == name:
@@ -56,7 +63,7 @@ def on_msg(msg,cs,address):
                 users[index].generate_token()
             else: cs.send('X_Invalid_Token'.encode()); return
 
-    if msg.startswith('[AUTH] GET TOKEN '):
+    elif msg.startswith('[AUTH] GET TOKEN '):
         msg = msg.replace('[AUTH] GET TOKEN ','').split(':')
         name = msg[0]
         psw = msg[1]
@@ -83,3 +90,4 @@ main.bind('msg',on_msg)
 
 lib.log('*',f'Authentication Service running on {c.ip}:{c.port}')
 
+while debug == False: pass

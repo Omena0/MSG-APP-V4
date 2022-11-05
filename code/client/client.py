@@ -41,7 +41,7 @@ while True:
 
 def a():
     while True:
-        main.send(input())
+        main.send(f'[MSG] {input()}')
 
 a = Thread(target=a)
 a.daemon=True

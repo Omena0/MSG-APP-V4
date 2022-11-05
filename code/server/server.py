@@ -37,7 +37,9 @@ def on_msg(msg,cs,address):
         global var
         var = cs,name,token
         auth.send(f'[AUTH] VALIDATE TOKEN {ip}:{name}:{token}')
-        
+    if msg.startswith('[MSG] '):
+        for i in main.clients:
+            i.send(f'{name}{msg}'.encode())
 
 
 

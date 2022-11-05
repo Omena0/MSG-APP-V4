@@ -36,5 +36,5 @@ password = '1234'
 
 auth.send(f'[AUTH] GET TOKEN {username}:{password}')
 
-while True:
-    print(auth.socket.recv(auth.msgbits).decode())
+#while True:
+ #   print(auth.socket.recv(auth.msgbits).decode())

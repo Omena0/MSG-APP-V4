@@ -31,16 +31,15 @@ class connection:
         if type == 'client':
             try: self.socket.connect((ip,port))
             except OSError:
-                print(f'[!] Connection failed! Target machine is not listening on port {self.port}')
-                stop()
+                print(f'[!] Connection failed! Target machine is not listening on port {self.port} [OSError]')
         if type == 'server':
             try: self.socket.bind((ip,port))
             except socket.gaierror:
-                print('[!] Bind failed! Ip address is invalid!')
+                print('[!] Bind failed! Ip address is invalid! [socket.gaierror]')
                 stop()
-            #except OSError:
-             #   print('[!] Bind failed! Ip address is not valid in its context!')
-              #  stop()
+            except OSError:
+                print('[!] Bind failed! Ip address is not valid in its context! [OSError]')
+                stop()
             self.socket.listen(5)
             if self.logging: lib.log('*',f'Listening on {self.ip}:{self.port}')
             listener = Thread(target=self._listen)

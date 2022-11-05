@@ -31,15 +31,14 @@ class connection:
         if type == 'client':
             try: self.socket.connect((ip,port))
             except OSError:
-                print(f'[!] Connection failed! Target machine is not listening on port {self.port}')
-                stop()
+                print(f'[!] Connection failed! Target machine is not listening on port {self.port} [OSError]')
         if type == 'server':
             try: self.socket.bind((ip,port))
             except socket.gaierror:
-                print('[!] Bind failed! Ip address is invalid!')
+                print('[!] Bind failed! Ip address is invalid! [socket.gaierror]')
                 stop()
             except OSError:
-                print('[!] Bind failed! Ip address is not valid in its context!')
+                print('[!] Bind failed! Ip address is not valid in its context! [OSError]')
                 stop()
             self.socket.listen(5)
             if self.logging: lib.log('*',f'Listening on {self.ip}:{self.port}')
@@ -53,17 +52,17 @@ class connection:
             try: msg = cs.recv(self.msgbits).decode()
             except:
                 try:
-                    self.on_disconnect(cs,address[0],address[1])
+                    self._on_disconnect(cs,address[0],address[1])
                     self.clients.remove(cs)
                     cs.close()
                     break
                 except: break
-            self.on_msg(msg,cs,address)
+            self._on_msg(msg,cs,address)
     
     def _listen(self):
         while True:
             cs, address = self.socket.accept()
-            self.on_connect(cs,address[0],address[1])
+            self._on_connect(cs,address[0],address[1])
             self.clients.add(cs)
             a = Thread(target=self._handle_client,args=[cs,address])
             a.daemon = True
@@ -82,4 +81,5 @@ class connection:
             self._on_disconnect = function
         if event == 'msg':
             self._on_msg = function
-
+        else:
+            exec(f'self.{event} = "{function}"')

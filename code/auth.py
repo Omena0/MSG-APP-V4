@@ -6,7 +6,7 @@ import socket
 
 debug = False
 
-main = ss.connection(c.ip,c.port,'server',logging=True)
+main = ss.connection(c.authip,c.authport,'server',logging=True)
 
 users = []
 usernames = []

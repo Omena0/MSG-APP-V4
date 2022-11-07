@@ -1,4 +1,4 @@
-import SimpleSockets as ss
+import socket
 import lib
 from threading import Thread
 
@@ -8,48 +8,49 @@ port = 5000
 authip = '127.0.0.1'
 authport = 5001
 
-main = ss.connection(ip,port,'client',logging=True)
-auth = ss.connection(authip,authport,'client',logging=True)
+name = 'Omena0'
+psw = '1234'
 
-
-
-username = 'Omena0'
-password = '1234'
-
-auth.send(f'[AUTH] GET TOKEN {username}:{password}')
-
-# Auth server returns this:
-# [AUTH] RETURN TOKEN: Omena0<TOKEN>31dbc24007771df22a8bd31bbc269bcc2dc7bfb5
-# We handle it here because the ss way didint work i guess
-
+s = socket.socket()
+s.connect((authip,authport))
+s.send(f'GET-TOKEN {name}:{lib.hash(psw)}'.encode())
 while True:
-    msg = auth.socket.recv(1024).decode()
-    if msg.startswith('X_'): lib.log('AUTH',f'Returned error: {msg}')
-    else: lib.log('AUTH',msg)
-    
-    if msg.startswith('[AUTH] RETURN TOKEN: '):
-        msg = msg.replace('[AUTH] RETURN TOKEN: ','')
-        token = msg
-        name = msg.split('<TOKEN>')[0]
-        lib.log('!',f'Logged in as {name}')
-        lib.log('!','Authenticating into msg server...')
-        main.send(f'[AUTH] REFRESH TOKEN {name}:{token}')
-    msg = main.socket.recv(1024).decode()
-    lib.log('MSG',msg)
-    if msg == 'X_Valid_Token': lib.log('*','Done!!!')
+    msg = s.recv(1024).decode()
+    if msg.startswith('X_'):
+        lib.log('ERROR',msg)
+        break
+    token = msg
     break
+s = socket.socket()
+s.connect((ip,port))
 
-def a():
+def listener():
     while True:
-        main.send(f'[MSG] {input()}')
+        msg = s.recv(1024).decode()
+        if msg.startswith('[MSG] '):
+            msg = msg.replace('[MSG] ','').split('<SEP>')
+            lib.log('MSG',f'{msg[0]} > {msg[1]}')
+        
+        
+        
+        
+        
+        
 
-a = Thread(target=a)
-a.daemon=True
+a = Thread(target=listener)
+a.daemon = True
 a.start()
 
 while True:
-    msg = main.socket.recv(1024).decode()
-    print(msg)
+    msg = input()
+    s.send(f'{msg}<SEP>{token}'.encode())
+    
+
+
+
+
+
+while True: pass
 
 
 
@@ -59,11 +60,3 @@ while True:
 
 
 
-
-
-
-
-
-
-
-        

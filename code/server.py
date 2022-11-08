@@ -29,15 +29,12 @@ lib.log('*',f'Name: {server_name}')
 lib.log('*',f'ID: {server_id}')
 
 def handle_client(cs,ip,port):
-    clients.add(cs)
     while True:
         try:
             msg = cs.recv(1024).decode()
             print(msg)
         except:
             lib.log('-',f'{ip} Disconnected.')
-            clients.remove(cs)
-            cs.close()
             return
         msg = msg.split('<SEP>')
         token = msg[1]
@@ -49,10 +46,12 @@ def handle_client(cs,ip,port):
             if a == 'X_Invalid_Token':
                 cs.close()
                 clients.remove(cs)
-                return
+                break
             else:
                 for cs in clients:
-                    cs.send('[MESSAGE]{name}<SEP>{msg.replace("<MSG>","")}'.encode())
+                    try:
+                        cs.send('[MESSAGE]{name}<SEP>{msg.replace("<MSG>","")}'.encode())
+                    except: clients.remove(cs)
 
         
         
@@ -94,6 +93,7 @@ main.listen(5)
 
 while True:
     cs, address = main.accept()
+    clients.add(cs)
     lib.log('+',f'Connection from {address[0]}')
     a = Thread(target=handle_client,args=[cs,address[0],address[1]])
     a.daemon = True

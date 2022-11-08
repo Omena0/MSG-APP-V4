@@ -19,14 +19,15 @@ while True:
     if msg.startswith('X_'):
         lib.log('ERROR',msg)
         break
-    token = msg
+    token = msg # + ' INVALIDATE-TOKEN' # Toggle on when testing for invalid token
     break
 s = socket.socket()
 s.connect((ip,port))
 
 def listener():
     while True:
-        msg = s.recv(1024).decode()
+        try: msg = s.recv(1024).decode()
+        except: lib.log('!','The connection was closed due to an error or you were kicked from the server (check auth)')
         if msg.startswith('[MSG] '):
             msg = msg.replace('[MSG] ','').split('<SEP>')
             lib.log('MSG',f'{msg[0]} > {msg[1]}')

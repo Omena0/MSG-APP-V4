@@ -1,10 +1,10 @@
 # MSG APP V4
  Oh, its another msg app?
 
-
-
-It will be done soon dont worry!!
+It will be done really soon dont worry!!
 
 ## NEWS:
-THIS PROJECT HAS BEEN DELAYED:
-Due to a SimpleSockets bug i need to redo the entire project, since SS is not reliable with many connections for some reason, and because the code was terrible, and would not allow for a functioning system right now.
+The project is 99% DONE!!!
+To use simply edit config.py and build with build.cmd
+Recommended to first use localhost. 
+PORTS SHOULD ALWAYS BE 5000 FOR SERVER AND 5001 FOR AUTH!!!

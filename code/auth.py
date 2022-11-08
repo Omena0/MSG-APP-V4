@@ -50,6 +50,7 @@ class server:    # SERVER CLASS
         exec(f'self.{name} = "{value}"')
 
 server('A test server','TestServer','1234')
+server('Another test server','TestServer2','1234')
 user('Omena0','1234')
 
 lib.log('*','Starting authentication service...')
@@ -88,7 +89,7 @@ def handle_client(cs,ip,port):
             cs.send('X_Invalid_Credentials'.encode())
 
         elif msg.startswith('GET-SERVERS'):
-            lib.log('*','Client from {ip} reuested servers.')
+            lib.log('*',f'Client from {ip} reqested servers.')
             msg = ''
             for server in servers:
                 msg = f'{server.name},{server.ip},{server.port}:{msg}'
@@ -107,11 +108,15 @@ def handle_client(cs,ip,port):
                 if name == usernames[index]:
                     if users[index].token == token:
                         cs.send('X_Valid_Token'.encode())
-                        lib.log('*',f'X_Valid Token from: {ip} For user {name}')
+                        lib.log('*',f'X_Valid_Token from: {ip} For user {name}')
                         continue
-            cs.send('X_Invalid_Token'.encode())
-            lib.log('!',f'X_Invalid_Token: Request from: {ip}:{port}, For user {name')
-            continue
+                    else:
+                        cs.send('X_Invalid_Token'.encode())
+                        lib.log('!',f'X_Invalid_Token: Request from: {ip}:{port}, For user {name}')
+                        continue
+                else:
+                    cs.send('X_No_User'.encode())
+                    continue
 
         elif msg.startswith('GET-TOKEN '):
             msg = msg.replace('GET-TOKEN ','').split(':')

@@ -2,30 +2,66 @@ import socket
 import lib
 from threading import Thread
 
-ip = '127.0.0.1'
-port = 5000
-
 authip = '127.0.0.1'
 authport = 5001
 
 name = 'Omena0'
 psw = '1234'
 
-s = socket.socket()
-s.connect((authip,authport))
-s.send(f'GET-TOKEN {name}:{lib.hash(psw)}'.encode())
-while True:
-    msg = s.recv(1024).decode()
-    if msg.startswith('X_'):
-        lib.log('ERROR',msg)
-        break
-    token = msg # + ' INVALIDATE-TOKEN' # Toggle on when testing for invalid token
-    break
-s = socket.socket()
-s.connect((ip,port))
+main = socket.socket()
+
+auth = socket.socket()
+auth.connect((authip,authport))
+result = ''
+auth.send(f'GET-SERVERS'.encode())
+servers = auth.recv(1024).decode().split(':') # RAW: ['Another test server,OFFLINE,OFFLINE', 'A test server,OFFLINE,OFFLINE', '']
+for server in enumerate(servers):
+    index = server[0]
+    server = server[1]
+    if server == '': continue
+    server = server.split(',')
+    result = f'-- SERVER --\nINDEX: {index}\nNAME: "{server[0]}"\nIP: {server[1]}\nPORT: {server[2]}\n\n{result}'
+print('--- PUBLIC SERVERS ---\n')
+print(result)
+print(servers)
+
+ip = 'OFFLINE'
+port = 'OFFLINE'
+
+while ip == 'OFFLINE':
+    try: a = int(input('Choose server:'))
+    except:
+        print('Please enter a number.')
+        continue
+    if a > len(servers)-2: print(f'Out of range. Accepted range is 0-{len(servers)-2}')
+    for server in enumerate(servers):
+        index = server[0]
+        server = server[1]
+        if server == '': continue
+        if index == int(a):
+            server = server.split(',')
+            ip = server[1]
+            port = server[2]
+            if ip == 'OFFLINE':
+                print('server.py')
+
+
+
+
+    
+auth.send(f'GET-TOKEN {name}:{lib.hash(psw)}'.encode())
+
+msg = auth.recv(1024).decode()
+if msg.startswith('X_'):
+    lib.log('ERROR',msg)
+token = msg # + ' INVALIDATE-TOKEN' # Toggle on when testing for invalid token
+
+
+main.connect((ip,port))
 
 def listener():
     while True:
+        msg = None
         try: msg = s.recv(1024).decode()
         except: lib.log('!','The connection was closed due to an error or you were kicked from the server (check auth)')
         if msg.startswith('[MSG] '):

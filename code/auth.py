@@ -51,7 +51,10 @@ class server:    # SERVER CLASS
 
 server('A test server','TestServer','1234')
 server('Another test server','TestServer2','1234')
+
 user('Omena0','1234')
+user('TestAccount','1234')
+user('Guest','1234')
 
 lib.log('*','Starting authentication service...')
 

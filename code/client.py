@@ -63,7 +63,7 @@ main.connect((ip,int(port)))
 
 def listener():
     while True:
-        msg = None
+        msg = ''
         try: msg = main.recv(1024).decode()
         except: lib.log('!','The connection was closed due to an error or you were kicked from the server (check auth)')
         if msg.startswith('[MESSAGE]'):

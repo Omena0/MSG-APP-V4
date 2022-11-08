@@ -55,6 +55,7 @@ server('Another test server','TestServer2','1234')
 user('Omena0','1234')
 user('TestAccount','1234')
 user('Guest','1234')
+user('Duck','MSG-APP-V4 is pro gamer')
 
 lib.log('*','Starting authentication service...')
 

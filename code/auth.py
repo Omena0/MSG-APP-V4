@@ -106,9 +106,8 @@ def handle_client(cs,ip,port):
             if name not in usernames:
                 cs.send('X_No_User'.encode())
                 continue
-            for name in enumerate(usernames):
-                index = name[0]
-                name = name[1]
+            for i in enumerate(usernames):
+                index = i[0]
                 if name == usernames[index]:
                     if users[index].token == token:
                         cs.send('X_Valid_Token'.encode())

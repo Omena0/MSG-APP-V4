@@ -115,12 +115,9 @@ def handle_client(cs,ip,port):
                         continue
                     else:
                         cs.send('X_Invalid_Token'.encode())
-                        lib.log('!',f'X_Invalid_Token: Request from: {ip}:{port}, For user {name}')
+                        lib.log('!',f'X_Invalid_Token from: {ip}:{port}, For user {name}')
                         continue
-                else:
-                    cs.send('X_No_User'.encode())
-                    continue
-
+                else: continue
         elif msg.startswith('GET-TOKEN '):
             msg = msg.replace('GET-TOKEN ','').split(':')
             name = msg[0]

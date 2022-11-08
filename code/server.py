@@ -34,10 +34,12 @@ def handle_client(cs,ip,port):
             msg = cs.recv(1024).decode()
             print(msg)
         except:
-            lib.log('-',f'{ip} Disconnected.')
-            clients.remove(cs)
-            cs.close()
-            break
+            try:
+                lib.log('-',f'{ip} Disconnected.')
+                clients.remove(cs)
+                cs.close()
+                break
+            except: break
         msg = msg.split('<SEP>')
         token = msg[1]
         name = msg[1].split('<TOKEN>')[0]
@@ -45,7 +47,7 @@ def handle_client(cs,ip,port):
         auth.send(f'GET-AUTHSTATUS {name}:{token}'.encode())
         while True:
             a = auth.recv(1024).decode()
-            if a == 'X_Invalid_Token':
+            if a == 'X_Invalid_Token' or a == 'X_Invalid_Password' or a == 'X_No_User':
                 cs.close()
                 clients.remove(cs)
                 break
@@ -94,7 +96,7 @@ auth = socket.socket()
 auth.connect((c.authip,c.authport))
 
 main.bind((c.ip,c.port))
-main.listen(5)
+main.listen(0)
 
 lib.log('*','Address bound! Listening...')
 

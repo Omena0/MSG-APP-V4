@@ -88,6 +88,7 @@ def handle_client(cs,ip,port):
             cs.send('X_Invalid_Credentials'.encode())
 
         elif msg.startswith('GET-SERVERS'):
+            lib.log('*','Client from {ip} reuested servers.')
             msg = ''
             for server in servers:
                 msg = f'{server.name},{server.ip},{server.port}:{msg}'
@@ -106,8 +107,10 @@ def handle_client(cs,ip,port):
                 if name == usernames[index]:
                     if users[index].token == token:
                         cs.send('X_Valid_Token'.encode())
+                        lib.log('*',f'X_Valid Token from: {ip} For user {name}')
                         continue
             cs.send('X_Invalid_Token'.encode())
+            lib.log('!',f'X_Invalid_Token: Request from: {ip}:{port}, For user {name')
             continue
 
         elif msg.startswith('GET-TOKEN '):

@@ -5,8 +5,10 @@ from threading import Thread
 authip = '127.0.0.1'
 authport = 5001
 
-name = 'Omena0'
-psw = '1234'
+print('Log in to continue:')
+
+name = input('Username: ')
+psw = input('Password: ')
 
 main = socket.socket()
 
@@ -51,22 +53,22 @@ while ip == 'OFFLINE':
     
 auth.send(f'GET-TOKEN {name}:{lib.hash(psw)}'.encode())
 
-msg = auth.recv(1024).decode()
+msg = auth.recv(2048).decode()
 if msg.startswith('X_'):
     lib.log('ERROR',msg)
 token = msg # + ' INVALIDATE-TOKEN' # Toggle on when testing for invalid token
 
 
-main.connect((ip,port))
+main.connect((ip,int(port)))
 
 def listener():
     while True:
         msg = None
-        try: msg = s.recv(1024).decode()
+        try: msg = main.recv(1024).decode()
         except: lib.log('!','The connection was closed due to an error or you were kicked from the server (check auth)')
-        if msg.startswith('[MSG] '):
-            msg = msg.replace('[MSG] ','').split('<SEP>')
-            lib.log('MSG',f'{msg[0]} > {msg[1]}')
+        if msg.startswith('[MESSAGE]'):
+            msg = msg.split('<END>')[0].replace('[MESSAGE]','').split('<SEP>')
+            lib.log('MSG',f'{msg[0]} > {msg[1]}\n')
         
         
         
@@ -80,20 +82,7 @@ a.start()
 
 while True:
     msg = input()
-    s.send(f'{msg}<SEP>{token}'.encode())
+    main.send(f'{msg} <SEP>{token}'.encode())
     
 
-
-
-
-
 while True: pass
-
-
-
-
-
-
-
-
-

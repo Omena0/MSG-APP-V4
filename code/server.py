@@ -35,7 +35,9 @@ def handle_client(cs,ip,port):
             print(msg)
         except:
             lib.log('-',f'{ip} Disconnected.')
-            return
+            clients.remove(cs)
+            cs.close()
+            break
         msg = msg.split('<SEP>')
         token = msg[1]
         name = msg[1].split('<TOKEN>')[0]
@@ -48,11 +50,12 @@ def handle_client(cs,ip,port):
                 clients.remove(cs)
                 break
             else:
-                for cs in clients:
+                a = frozenset(clients)
+                for cs in a:
                     try:
-                        cs.send('[MESSAGE]{name}<SEP>{msg.replace("<MSG>","")}'.encode())
+                        cs.send(f'[MESSAGE]{name}<SEP>{msg.replace("<MSG>","")}<END>'.encode())
                     except: clients.remove(cs)
-
+                break
         
         
 # Send request to server for server discovery, this will be only way to join lmao
@@ -78,10 +81,12 @@ while True:
     server_name = msg[0] # string without :
     server_id = msg[1] # int
     server_token = msg[2] # hash
+    print()
     lib.log('!','Authentication complete! Starting main server...')
     lib.log('*',f'NAME: {server_name}')
     lib.log('*',f'ID: {server_id}')
     lib.log('*',f'TOKEN: {server_token}')
+    print()
     break
 
 auth.close()
@@ -91,6 +96,8 @@ auth.connect((c.authip,c.authport))
 main.bind((c.ip,c.port))
 main.listen(5)
 
+lib.log('*','Address bound! Listening...')
+
 while True:
     cs, address = main.accept()
     clients.add(cs)
@@ -98,5 +105,7 @@ while True:
     a = Thread(target=handle_client,args=[cs,address[0],address[1]])
     a.daemon = True
     a.start()
-    for cs in clients:
-        cs.send('[+]{address[1]}'.encode())
+    sus = frozenset(clients)
+    for cs in sus:
+        try: cs.send('[+]{address[1]}'.encode())
+        except: clients.remove(cs)

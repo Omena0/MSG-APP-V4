@@ -71,7 +71,7 @@ def listener():
             lib.log('MSG',f'{msg[0]} > {msg[1]}\n')
         
         
-lib.log('*','Logged in as {name}.')
+lib.log('*',f'Logged in as {name}.')
         
 
         

@@ -3,59 +3,13 @@ import config as c
 import socket
 from threading import Thread
 import time as t
+from helper import *
 
 main = socket.socket()
 main.bind((c.authip,c.authport))
 main.listen(5)
 
 clients = set()
-servers = []
-ids = []
-
-users = []
-usernames = []
-
-class user:      # USER CLASS 
-    def __init__(self,name,psw):
-        self.name = name
-        if name in usernames:
-            name = name + '_'
-            while name not in usernames: name = name + str(lib.rand(1,9))
-        usernames.append(name)
-        self.psw = lib.hash(psw)
-        self.generate_token()
-        users.append(self)
-        
-    def bind(self,name,value):
-        exec(f'self.{name} = {value}')
-    def generate_token(self):
-        self.token = f'{str(self.name)}<TOKEN>{lib.hash(str(lib.rand(-32767,32767))+str(self.name)+str(self.psw))}'
-        
-
-class server:    # SERVER CLASS
-    def __init__(self,name,id,password):
-        self.name = name
-        self.id = id
-        self.psw = password
-        self.ips = []
-        self.generate_token()
-        ids.append(id)
-        servers.append(self)
-        self.ip = 'OFFLINE'
-        self.port = 'OFFLINE'
-            
-    def generate_token(self):
-        self.token = f'{str(self.id)}<TOKEN>{lib.hash(str(lib.rand(-32767,32767))+str(self.name)+str(self.psw))}'
-    def bind(self,name,value):
-        exec(f'self.{name} = "{value}"')
-
-server('A test server','TestServer','1234')
-server('Another test server','TestServer2','1234')
-
-user('Omena0','1234')
-user('TestAccount','1234')
-user('Guest','1234')
-user('Duck','MSG-APP-V4 is pro gamer')
 
 lib.log('*','Starting authentication service...')
 

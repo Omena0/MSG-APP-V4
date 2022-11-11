@@ -41,4 +41,4 @@ p1.on_login = on_login
 
 
 # PLUGINS LIST: (DISABLE PLUGIN BY NOT ADDING IT)
-plugins = [p1]
+plugins = [] # add p1 to list to enable it, this is not on by default because it server no real purpose.

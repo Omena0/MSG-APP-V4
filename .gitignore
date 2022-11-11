@@ -4,6 +4,7 @@ spec
 build
 dist/auth.exe
 code/auth
+code/auth/helper.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

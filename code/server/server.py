@@ -1,5 +1,4 @@
 import lib
-import SimpleSockets as ss
 import config as c
 from threading import Thread
 import socket

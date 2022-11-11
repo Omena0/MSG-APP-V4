@@ -32,7 +32,6 @@ def handle_client(cs,ip,port):
     while True:
         try:
             msg = cs.recv(1024).decode()
-            print(msg)
         except:
             try:
                 lib.log('-',f'{ip} Disconnected.')
@@ -56,6 +55,9 @@ def handle_client(cs,ip,port):
                 for cs in a:
                     try:
                         cs.send(f'[MESSAGE]{name}<SEP>{msg.replace("<MSG>","")}<END>'.encode())
+                        for i in p.plugins:
+                            i.on_msg(name,msg,ip)
+                        lib.log('MESSAGE',f'<{name}>: {msg.replace("<MSG>","")}')
                     except: clients.remove(cs)
                 break
         

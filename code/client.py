@@ -71,14 +71,16 @@ def listener():
             lib.log('MSG',f'{msg[0]} > {msg[1]}\n')
         
         
+lib.log('*','Logged in as {name}.')
         
-        
-        
+
         
 
 a = Thread(target=listener)
 a.daemon = True
 a.start()
+
+lib.log('*','Type and hit enter to send message.')
 
 while True:
     msg = input()

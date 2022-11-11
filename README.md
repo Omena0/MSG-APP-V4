@@ -15,6 +15,8 @@ From this state forward this project is no longer in alpha, nor beta, but in ACT
 ### Step 1. Downloading.
 Download or clone the repo.
 Either clone or click on Code > Download zip
+#### OR
+Go to relases > Newest relase and download there
 ### Step 2.  Installing / building.
 You can either use the newest build, or build the app yourself by running build.cmd.
 First you need to get pyinstaller. Open command prompt (i reccomend windows terminal preview from microsoft store) and type

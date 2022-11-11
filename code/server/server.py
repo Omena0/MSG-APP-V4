@@ -1,8 +1,8 @@
 import lib
-import SimpleSockets as ss
 import config as c
 from threading import Thread
 import socket
+import os
 
 main = socket.socket()
 auth = socket.socket()
@@ -28,6 +28,18 @@ lib.log('*',f'Starting server...')
 lib.log('*',f'Name: {server_name}')
 lib.log('*',f'ID: {server_id}')
 
+#PLUGIN LOADER
+
+
+lib.log('PLUGIN LOADER','Searching for plugins')
+import plugins as p
+if not p.plugins == []:
+    for i in p.plugins:
+        i.on_init()
+
+
+#BACK TO VANILLA CODE
+
 def handle_client(cs,ip,port):
     while True:
         try:
@@ -36,6 +48,8 @@ def handle_client(cs,ip,port):
         except:
             try:
                 lib.log('-',f'{ip} Disconnected.')
+                for i in p.plugins:
+                    i.on_leave(ip,port)
                 clients.remove(cs)
                 cs.close()
                 break
@@ -47,6 +61,8 @@ def handle_client(cs,ip,port):
         auth.send(f'GET-AUTHSTATUS {name}:{token}'.encode())
         while True:
             a = auth.recv(1024).decode()
+            for i in p.plugins:
+                i.on_login(name,ip,port,a)
             if a == 'X_Invalid_Token' or a == 'X_Invalid_Password' or a == 'X_No_User':
                 cs.close()
                 clients.remove(cs)
@@ -104,6 +120,8 @@ while True:
     cs, address = main.accept()
     clients.add(cs)
     lib.log('+',f'Connection from {address[0]}')
+    for i in p.plugins:
+        i.on_join(address[0],address[1])
     a = Thread(target=handle_client,args=[cs,address[0],address[1]])
     a.daemon = True
     a.start()

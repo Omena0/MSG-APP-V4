@@ -1,11 +1,12 @@
 # Custom
 
+*__pycache__
+
 spec
 build
+
 dist/auth.exe
 code/auth
-code/auth/helper.py
-*.spec
-build
-*__pycache__
 code/server.zip
+
+

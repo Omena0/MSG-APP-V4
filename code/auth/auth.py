@@ -28,6 +28,8 @@ def handle_client(cs,ip,port):
             name = msg[0]
             id = msg[1]
             psw = msg[2]
+            server_ip = msg[3]
+            server_port = msg[4]
             for i in enumerate(ids):
                 index, i = i
                 if i == id:
@@ -36,8 +38,8 @@ def handle_client(cs,ip,port):
                         name = name.replace(":","")
                         servers[index].ips.append(ip)
                         servers[index].generate_token()
-                        servers[index].bind('ip',ip)
-                        servers[index].bind('port',port)
+                        servers[index].ip = server_ip
+                        servers[index].port = server_port
                         cs.send(f'X_Valid_Credentials {name}:{id}:{token}'.encode())
                         lib.log('*',f'Token sent to {ip} for {id}')
                     else:

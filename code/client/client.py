@@ -2,8 +2,8 @@ import socket
 import lib
 from threading import Thread
 
-authip = '127.0.0.1'
-authport = 5001
+authip = '147.185.221.229'
+authport = 49805
 
 print('Log in to continue:')
 
@@ -31,7 +31,16 @@ ip = 'OFFLINE'
 port = 'OFFLINE'
 
 while ip == 'OFFLINE':
-    try: a = int(input('Choose server:'))
+    a = input('Choose server:')
+    if a.lower() == 'c' or a.lower() == 'custom':
+        ip = input('IP: ')
+        port = input('PORT: ')
+        try: port = int(port)
+        except:
+            print('Please enter a number.')
+            while True: pass
+        break
+    try: a = int(a)
     except:
         print('Please enter a number.')
         continue

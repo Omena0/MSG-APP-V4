@@ -7,7 +7,7 @@ build
 
 dist/auth.exe
 code/auth
-code/server.zip
+code/auth/auth.py
 
 
 code/server/config.py

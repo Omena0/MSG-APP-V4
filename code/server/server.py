@@ -72,8 +72,9 @@ def handle_client(cs,ip,port):
 # Send request to server for server discovery, this will be only way to join lmao
 lib.log('*','Authenticating...')
 try: auth.connect((c.authip,c.authport))
-except ConnectionRefusedError:
+except ConnectionRefusedError as e:
     lib.log('!','Failed to authenticate! Authentication server offline!')
+    if input('') == 'debug': print(f'\n{e}\n')
     while True: pass
 
 auth.send(f'GET-SERVERTOKEN {c.server_name.replace(":","")}:{c.server_id.replace(":","")}:{c.server_password.replace(":","")}:{c.server_ip.replace(":","")}:{str(c.server_port).replace(":","")}'.encode())
@@ -87,6 +88,7 @@ while True:
     lib.log('AUTH',msg)
     if not msg.startswith('X_Valid_Credentials '):
         lib.log('ERROR',msg)
+        if input('') == 'debug': print(f'\n{e}\n')
         while True: pass
     msg = msg.replace('X_Valid_Credentials ','').split(':')
     c.server_name = msg[0] # string without :

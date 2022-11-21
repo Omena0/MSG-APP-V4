@@ -5,15 +5,21 @@ from threading import Thread
 authip = '147.185.221.229'
 authport = 49805
 
+
+main = socket.socket()
+auth = socket.socket()
+
+try: auth.connect((authip,authport))
+except Exception as e:
+    print(f'Could not connect to the AUTH server.')
+    if input('') == 'debug': print(f'\n{e}\n')
+    while True:pass
+
 print('Log in to continue:')
 
 name = input('Username: ')
 psw = input('Password: ')
 
-main = socket.socket()
-
-auth = socket.socket()
-auth.connect((authip,authport))
 result = ''
 auth.send(f'GET-SERVERS'.encode())
 servers = auth.recv(1024).decode().split(':') # RAW: ['Another test server,OFFLINE,OFFLINE', 'A test server,OFFLINE,OFFLINE', '']
@@ -74,7 +80,9 @@ def listener():
     while True:
         msg = ''
         try: msg = main.recv(1024).decode()
-        except: lib.log('!','The connection was closed due to an error or you were kicked from the server (check auth)')
+        except Exception as e:
+            lib.log('!','The connection was closed due to an error or you were kicked from the server (check auth)')
+            if input('') == 'debug': print(f'\n{e}\n')
         if msg.startswith('[MESSAGE]'):
             msg = msg.split('<END>')[0].replace('[MESSAGE]','').split('<SEP>')
             lib.log('MSG',f'{msg[0]} > {msg[1]}\n')

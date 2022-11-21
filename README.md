@@ -46,7 +46,7 @@ server_password = '<SERVER PASSWORD>'
 # Where the auth server will tell the client to connect when joining a server.
 # MAKE SURE TO FILL THEESE IN!!!
 server_ip = '<TUNNEL IP>'
-server_port = <TUNNEL PORT>
+server_port = '<TUNNEL PORT>'
 ```
 
 #### MAKE SURE TO FILL ALL OF THE VALUES IN!

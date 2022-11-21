@@ -60,7 +60,7 @@ while ip == 'OFFLINE':
             ip = server[1]
             port = server[2]
             if ip == 'OFFLINE':
-                print('server.py')
+                print('Server is offline!')
 
 
 

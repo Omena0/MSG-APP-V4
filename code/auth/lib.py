@@ -34,7 +34,7 @@ def about():
     log('ABOUT',f'You are using Omena0\'s utilib {version}!')
 
 def hash(value):
-    return h.sha1(str(value).encode()).hexdigest()
+    return h.sha224(str(value).encode()).hexdigest()
 
 
 def encrypt(data,publicKey=publicKey):

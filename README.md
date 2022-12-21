@@ -62,7 +62,11 @@ Now you can try to connect, if you have a server account you will see the server
 4. When the client asks u to select server type in "c" or "custom" and enter the server_ip and server_port.
 5. It should work lul
 
-
+## Plug-in tutorial:
+Step 1: Install server
+Step 2: Stop trying to make a plugin if u dont know how to code and arent familiar with apis
+Step 3: Read the server code and examples to see how tf u do this
+Step 4: Stop trying to make plugins because ur stupid
 
 
 

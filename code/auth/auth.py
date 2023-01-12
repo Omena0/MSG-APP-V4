@@ -61,6 +61,7 @@ def handle_client(cs,ip,port):
             token = msg[1]
             if name not in usernames:
                 cs.send('X_No_User'.encode())
+                lib.log('*',f'X_No_User from: {ip} For user {name}')
                 continue
             for i in enumerate(usernames):
                 index = i[0]
@@ -83,7 +84,7 @@ def handle_client(cs,ip,port):
                 index = i[0]
                 username = i[1]
                 if username == name:
-                    if users[index].psw == psw:
+                    if users[0].psw == psw:
                         users[index].generate_token()
                         cs.send(f'{users[index].token}'.encode())
                     else: cs.send('X_Invalid_Password'.encode())

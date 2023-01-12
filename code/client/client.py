@@ -3,8 +3,8 @@ import lib
 from threading import Thread
 from getpass import getpass
 
-authip = '147.185.221.229'
-authport = 49805
+authip = '127.0.0.1' #'147.185.221.229'
+authport = 5001 #49805
 
 main = socket.socket()
 auth = socket.socket()
@@ -47,19 +47,22 @@ ip = 'OFFLINE'
 port = 'OFFLINE'
 
 while ip == 'OFFLINE':
-    if not offline:
+    if offline: a = 'c'
+    else:
         a = input('Choose server:')
-        if a.lower() == 'c' or a.lower() == 'custom':
-            ip = input('IP: ')
-            port = input('PORT: ')
-            try: port = int(port)
-            except:
-                print('Please enter a number.')
-                while True: pass
-            break
+    if a.lower() == 'c' or a.lower() == 'custom':
+        ip = input('IP: ')
+        port = input('PORT: ')
+        try: port = int(port)
+        except:
+            print('Please enter a number.')
+            while True: pass
+        break
+
     try: a = int(a)
     except:
-        print('The port must be a number!')
+        print('The index must be a number!')
+        a = 5000
         continue
     if not offline:
         if a > len(servers)-2: print(f'Out of range. Accepted range is 0-{len(servers)-2}')
@@ -105,5 +108,5 @@ while True:
     msg = input()
     main.send(f'{msg} <SEP>{token}'.encode())
     
-
+print('This is not supposed to happen....')
 while True: pass

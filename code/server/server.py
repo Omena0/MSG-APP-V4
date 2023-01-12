@@ -45,7 +45,7 @@ def handle_client(cs,ip,port):
             if not offline: a = auth.recv(1024).decode()
             else: a = 'X_Valid_Token'
             for i in p.plugins:
-                i.on_login(name,ip,port,a)
+                i.on_login(name,ip,port,a,clients)
             if a == 'X_Invalid_Token' or a == 'X_Invalid_Password' or a == 'X_No_User':
                 cs.close()
                 clients.remove(cs)
@@ -56,7 +56,7 @@ def handle_client(cs,ip,port):
                     try:
                         cs.send(f'[MESSAGE]{name}<SEP>{msg.replace("<MSG>","")}<END>'.encode())
                         for i in p.plugins:
-                            i.on_msg(name,msg,ip,cs)
+                            i.on_msg(name,msg,ip,cs,clients)
                         lib.log('MESSAGE',f'<{name}>: {msg.replace("<MSG>","")}')
                     except: clients.remove(cs)
                 break
@@ -66,6 +66,9 @@ def handle_client(cs,ip,port):
 lib.log('*','Authenticating...')
 try: auth.connect((c.authip,c.authport))
 except TimeoutError as e:
+    lib.log('!','Failed to authenticate! Continuing in OFFLINE MODE..')
+    offline = True
+except ConnectionRefusedError as e:
     lib.log('!','Failed to authenticate! Continuing in OFFLINE MODE..')
     offline = True
 else:

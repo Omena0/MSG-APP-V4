@@ -1,6 +1,7 @@
 import socket
 import lib
 from threading import Thread
+from getpass import getpass
 
 authip = '147.185.221.229'
 authport = 49805
@@ -11,15 +12,16 @@ auth = socket.socket()
 try:
     auth.connect((authip,authport))
 except Exception as e:
-    print(f'Could not connect to the AUTH server. Continuing in OFFLINE MODE..')
+    print(f'Could not connect to the Authentication server.')
     offline = True
 else: offline = False
 
-print('Log in to continue:')
+if offline: print('You are in OFFLINE MODE! \nYou can only connect to servers that are also in offline mode.\n')
+else: print('Log in to continue:')
 
 name = input('Username: ')
 if not offline:
-    psw = input('Password: ')
+    psw = getpass('Password:')
     auth.send(f'GET-TOKEN {name}:{lib.hash(psw)}'.encode())
     msg = auth.recv(2048).decode()
     if msg.startswith('X_'):
@@ -45,18 +47,19 @@ ip = 'OFFLINE'
 port = 'OFFLINE'
 
 while ip == 'OFFLINE':
-    a = input('Choose server:')
-    if a.lower() == 'c' or a.lower() == 'custom':
-        ip = input('IP: ')
-        port = input('PORT: ')
-        try: port = int(port)
-        except:
-            print('Please enter a number.')
-            while True: pass
-        break
+    if not offline:
+        a = input('Choose server:')
+        if a.lower() == 'c' or a.lower() == 'custom':
+            ip = input('IP: ')
+            port = input('PORT: ')
+            try: port = int(port)
+            except:
+                print('Please enter a number.')
+                while True: pass
+            break
     try: a = int(a)
     except:
-        print('The port must be anumber!')
+        print('The port must be a number!')
         continue
     if not offline:
         if a > len(servers)-2: print(f'Out of range. Accepted range is 0-{len(servers)-2}')

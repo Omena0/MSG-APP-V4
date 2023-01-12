@@ -5,7 +5,6 @@
 spec
 build
 
-dist/auth.exe
 code/auth
 code/auth/auth.py
 

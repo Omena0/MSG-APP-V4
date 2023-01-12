@@ -3,7 +3,7 @@ import config as c
 import socket
 from threading import Thread
 import time as t
-from classes import *
+from accounts import *
 
 main = socket.socket()
 main.bind((c.authip,c.authport))
